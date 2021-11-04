@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
-using FileRenamer.Business;
 using Unity;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Drawing;
 
 namespace FileRenamer.UI
 {
@@ -22,7 +21,7 @@ namespace FileRenamer.UI
             InitializeComponent();
         }
 
-        private void BtnChooseFolder_Click(object sender, EventArgs e)
+        private void ChooseFolder_Click(object sender, EventArgs e)
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog
             {
@@ -34,71 +33,154 @@ namespace FileRenamer.UI
             {
                 txtSourceFolder.Text = dialog.FileName;
 
-                clbFiles.Items.Clear();
+                if (SourceReady())
+                {
+                    targetFiles.Items.Clear();
 
+                    LoadFiles();
+
+                    btnExecute.Enabled = false;
+                }
             }
-            btnExecute.Enabled = false;
         }
 
         private void Execute_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < clbFiles.Items.Count; i++)
+            for (int i = 0; i < targetFiles.Items.Count; i++)
             {
-                if (!clbFiles.GetItemChecked(i))
+                if (!targetFiles.GetItemChecked(i))
                 {
                     continue;
                 }
 
-                Target instance = (Target)clbFiles.Items[i];
+                Target instance = (Target)targetFiles.Items[i];
 
                 string original = Path.Combine(txtSourceFolder.Text.Trim(), instance.OriginalName);
                 string target = Path.Combine(txtSourceFolder.Text.Trim(), instance.TargetName);
 
                 if (File.Exists(target))
                 {
+                    log.Items.Add(Path.GetFileName(original) + "重命名失败！ 文件已存在！");
                     continue;
                 }
-
-                File.Move(original, target);
+                try
+                {
+                    File.Move(original, target);
+                    //log.Items.Add(Path.GetFileName(original) + "重命名完成！");
+                }
+                catch (IOException ex)
+                {
+                    ListViewItem item = new ListViewItem
+                    {
+                        Text = Path.GetFileName(original) + "重命名失败！ 文件被占用！",
+                        ForeColor = Color.Red
+                    };
+                    log.Items.Add(item);
+                }
             }
+
+            Reset();
 
             MessageBox.Show("重命名完成！", "重命名完成！", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void Preview_Click(object sender, EventArgs e)
         {
-            checkAll.Checked = false;
-            PreView();
-        }
-
-        private void PreView()
-        {
-            if (!IsValid())
+            if (!ConditionReady())
             {
                 btnExecute.Enabled = false;
                 return;
             }
 
-            clbFiles.Items.Clear();
-
             ChooseRenamer();
 
+            btnExecute.Enabled = true;
+
+            RenamePreview();
+        }
+
+        private bool SourceReady()
+        {
+            if (string.IsNullOrEmpty(txtSourceFolder.Text) || !Directory.Exists(txtSourceFolder.Text.Trim()))
+            {
+                this.lblMessage.Text = "目标文件夹不存在！";
+                return false;
+            }
+
+            if (Directory.GetFiles(txtSourceFolder.Text).Length == 0)
+            {
+                this.lblMessage.Text = "目标文件夹为空！";
+                return false;
+            }
+
+            return true;
+        }
+
+
+        private void LoadFiles()
+        {
             var files = Directory.GetFiles(txtSourceFolder.Text);
+
+            targetFiles.Items.Clear();
 
             foreach (var item in files)
             {
                 string originName = Path.GetFileName(item);
 
-                string newName = Rename(originName);
+                Target target = new Target(originName, originName);
 
-                Target target = new Target(originName, newName);
+                targetFiles.Items.Add(target, false);
+            }
+        }
 
-                clbFiles.Items.Add(target, false);
+
+        private void RenamePreview()
+        {
+            for (int i = 0; i < targetFiles.Items.Count; i++)
+            {
+                if (!targetFiles.GetItemChecked(i))
+                {
+                    continue;
+                }
+
+                Target target = (Target)targetFiles.Items[i];
+
+                target.TargetName = Rename(target.OriginalName);
+
+                targetFiles.Items[i] = target;
+            }
+        }
+
+
+
+        private bool ConditionReady()
+        {
+            if (rbDelete.Checked && string.IsNullOrEmpty(txtOldCharacter.Text))
+            {
+                lblMessage.Text = "删除字符为空，请重新输入！";
+                return false;
             }
 
-            btnExecute.Enabled = true;
 
+            if (rbReplace.Checked && string.IsNullOrEmpty(txtOldCharacter.Text))
+            {
+                lblMessage.Text = "目标字符为空，请重新输入！";
+                return false;
+            }
+
+            if (rbReplace.Checked && string.IsNullOrEmpty(txtNewCharacter.Text))
+            {
+                lblMessage.Text = "替换字符为空，请重新输入！";
+                return false;
+            }
+
+
+            lblMessage.Text = String.Empty;
+
+            return true;
         }
+
+
 
         private bool IsValid()
         {
@@ -108,26 +190,19 @@ namespace FileRenamer.UI
                 return false;
             }
 
-            if (string.IsNullOrEmpty(txtOldCharacter.Text))
-            {
-                MessageBox.Show("删除字符为空，请重新输入！", "输入错误！", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-
-            if (rbReplace.Checked && string.IsNullOrEmpty(txtNewCharacter.Text))
-            {
-                MessageBox.Show("替换字符为空，请重新输入！", "输入错误！", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-
             if (Directory.GetFiles(txtSourceFolder.Text).Length == 0)
             {
                 MessageBox.Show("目标文件夹为空！", "输入错误！", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
-            return true;
+            if (string.IsNullOrEmpty(txtOldCharacter.Text))
+            {
+                MessageBox.Show("删除字符为空，请重新输入！", "输入错误！", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
 
+            return true;
         }
 
         private void RenameType_Changed(object sender, EventArgs e)
@@ -138,9 +213,9 @@ namespace FileRenamer.UI
 
         private void CheckAll_CheckedChanged(object sender, EventArgs e)
         {
-            for (int i = 0; i < clbFiles.Items.Count; i++)
+            for (int i = 0; i < targetFiles.Items.Count; i++)
             {
-                clbFiles.SetItemChecked(i, checkAll.Checked); ;
+                targetFiles.SetItemChecked(i, checkAll.Checked); ;
             }
 
         }
@@ -164,9 +239,29 @@ namespace FileRenamer.UI
             {
                 return renamer.Delete(name, txtOldCharacter.Text.Trim());
             }
+            else if (rbReplace.Checked)
+            {
+                return renamer.Rename(name, txtOldCharacter.Text.Trim(), txtNewCharacter.Text.Trim());
+            }
+            else if (rbToUpper.Checked)
+            {
+                return renamer.ToUpper(name);
+            }
 
-            return renamer.Rename(name, txtOldCharacter.Text.Trim(), txtNewCharacter.Text.Trim());
+            return renamer.ToLower(name);
+        }
 
+        private void Reset_Click(object sender, EventArgs e)
+        {
+            Reset();
+        }
+
+        private void Reset()
+        {
+            LoadFiles();
+
+            checkAll.Checked = false;
+            btnExecute.Enabled = false;
         }
     }
 }

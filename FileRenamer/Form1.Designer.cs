@@ -40,9 +40,14 @@
             this.rbDelete = new System.Windows.Forms.RadioButton();
             this.rbReplace = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rbToLower = new System.Windows.Forms.RadioButton();
+            this.rbToUpper = new System.Windows.Forms.RadioButton();
             this.cbIsRegex = new System.Windows.Forms.CheckBox();
-            this.clbFiles = new System.Windows.Forms.CheckedListBox();
+            this.targetFiles = new System.Windows.Forms.CheckedListBox();
             this.checkAll = new System.Windows.Forms.CheckBox();
+            this.lblMessage = new System.Windows.Forms.Label();
+            this.reset = new System.Windows.Forms.Button();
+            this.log = new System.Windows.Forms.ListBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,7 +59,7 @@
             this.btnChooseFolder.TabIndex = 0;
             this.btnChooseFolder.Text = "文件夹";
             this.btnChooseFolder.UseVisualStyleBackColor = true;
-            this.btnChooseFolder.Click += new System.EventHandler(this.BtnChooseFolder_Click);
+            this.btnChooseFolder.Click += new System.EventHandler(this.ChooseFolder_Click);
             // 
             // btnExecute
             // 
@@ -70,22 +75,22 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(128, 71);
+            this.label1.Location = new System.Drawing.Point(124, 67);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 11);
             this.label1.TabIndex = 3;
-            this.label1.Text = "删除字符：";
+            this.label1.Text = "目标字符：";
             // 
             // txtOldCharacter
             // 
-            this.txtOldCharacter.Location = new System.Drawing.Point(192, 66);
+            this.txtOldCharacter.Location = new System.Drawing.Point(188, 62);
             this.txtOldCharacter.Name = "txtOldCharacter";
             this.txtOldCharacter.Size = new System.Drawing.Size(376, 20);
             this.txtOldCharacter.TabIndex = 5;
             // 
             // btnPreview
             // 
-            this.btnPreview.Location = new System.Drawing.Point(452, 550);
+            this.btnPreview.Location = new System.Drawing.Point(478, 550);
             this.btnPreview.Name = "btnPreview";
             this.btnPreview.Size = new System.Drawing.Size(75, 19);
             this.btnPreview.TabIndex = 2;
@@ -104,7 +109,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(128, 111);
+            this.label5.Location = new System.Drawing.Point(124, 93);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(60, 11);
             this.label5.TabIndex = 3;
@@ -113,7 +118,7 @@
             // txtNewCharacter
             // 
             this.txtNewCharacter.Enabled = false;
-            this.txtNewCharacter.Location = new System.Drawing.Point(192, 105);
+            this.txtNewCharacter.Location = new System.Drawing.Point(188, 87);
             this.txtNewCharacter.Name = "txtNewCharacter";
             this.txtNewCharacter.Size = new System.Drawing.Size(376, 20);
             this.txtNewCharacter.TabIndex = 5;
@@ -122,7 +127,7 @@
             // 
             this.rbDelete.AutoSize = true;
             this.rbDelete.Checked = true;
-            this.rbDelete.Location = new System.Drawing.Point(10, 19);
+            this.rbDelete.Location = new System.Drawing.Point(10, 16);
             this.rbDelete.Name = "rbDelete";
             this.rbDelete.Size = new System.Drawing.Size(67, 15);
             this.rbDelete.TabIndex = 11;
@@ -135,7 +140,7 @@
             // rbReplace
             // 
             this.rbReplace.AutoSize = true;
-            this.rbReplace.Location = new System.Drawing.Point(10, 57);
+            this.rbReplace.Location = new System.Drawing.Point(10, 39);
             this.rbReplace.Name = "rbReplace";
             this.rbReplace.Size = new System.Drawing.Size(67, 15);
             this.rbReplace.TabIndex = 12;
@@ -147,33 +152,63 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.rbToLower);
+            this.groupBox1.Controls.Add(this.rbToUpper);
             this.groupBox1.Controls.Add(this.rbDelete);
             this.groupBox1.Controls.Add(this.rbReplace);
             this.groupBox1.Location = new System.Drawing.Point(13, 51);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(99, 91);
+            this.groupBox1.Size = new System.Drawing.Size(99, 103);
             this.groupBox1.TabIndex = 13;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "重命名类型";
             // 
+            // rbToLower
+            // 
+            this.rbToLower.AutoSize = true;
+            this.rbToLower.Enabled = false;
+            this.rbToLower.Location = new System.Drawing.Point(10, 81);
+            this.rbToLower.Name = "rbToLower";
+            this.rbToLower.Size = new System.Drawing.Size(67, 15);
+            this.rbToLower.TabIndex = 14;
+            this.rbToLower.TabStop = true;
+            this.rbToLower.Tag = "ReplaceCharacter";
+            this.rbToLower.Text = "变为小写";
+            this.rbToLower.UseVisualStyleBackColor = true;
+            // 
+            // rbToUpper
+            // 
+            this.rbToUpper.AutoSize = true;
+            this.rbToUpper.Enabled = false;
+            this.rbToUpper.Location = new System.Drawing.Point(10, 60);
+            this.rbToUpper.Name = "rbToUpper";
+            this.rbToUpper.Size = new System.Drawing.Size(67, 15);
+            this.rbToUpper.TabIndex = 13;
+            this.rbToUpper.TabStop = true;
+            this.rbToUpper.Tag = "ReplaceCharacter";
+            this.rbToUpper.Text = "变为大写";
+            this.rbToUpper.UseVisualStyleBackColor = true;
+            // 
             // cbIsRegex
             // 
             this.cbIsRegex.AutoSize = true;
-            this.cbIsRegex.Location = new System.Drawing.Point(576, 69);
+            this.cbIsRegex.Enabled = false;
+            this.cbIsRegex.Location = new System.Drawing.Point(572, 65);
             this.cbIsRegex.Name = "cbIsRegex";
             this.cbIsRegex.Size = new System.Drawing.Size(46, 15);
             this.cbIsRegex.TabIndex = 14;
             this.cbIsRegex.Text = "正则";
             this.cbIsRegex.UseVisualStyleBackColor = true;
             // 
-            // clbFiles
+            // targetFiles
             // 
-            this.clbFiles.CheckOnClick = true;
-            this.clbFiles.FormattingEnabled = true;
-            this.clbFiles.Location = new System.Drawing.Point(13, 160);
-            this.clbFiles.Name = "clbFiles";
-            this.clbFiles.Size = new System.Drawing.Size(619, 349);
-            this.clbFiles.TabIndex = 15;
+            this.targetFiles.CausesValidation = false;
+            this.targetFiles.CheckOnClick = true;
+            this.targetFiles.FormattingEnabled = true;
+            this.targetFiles.Location = new System.Drawing.Point(13, 160);
+            this.targetFiles.Name = "targetFiles";
+            this.targetFiles.Size = new System.Drawing.Size(622, 349);
+            this.targetFiles.TabIndex = 15;
             // 
             // checkAll
             // 
@@ -186,13 +221,45 @@
             this.checkAll.UseVisualStyleBackColor = true;
             this.checkAll.CheckedChanged += new System.EventHandler(this.CheckAll_CheckedChanged);
             // 
+            // lblMessage
+            // 
+            this.lblMessage.AutoSize = true;
+            this.lblMessage.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.lblMessage.Location = new System.Drawing.Point(119, 38);
+            this.lblMessage.Name = "lblMessage";
+            this.lblMessage.Size = new System.Drawing.Size(0, 11);
+            this.lblMessage.TabIndex = 17;
+            // 
+            // reset
+            // 
+            this.reset.Location = new System.Drawing.Point(397, 550);
+            this.reset.Name = "reset";
+            this.reset.Size = new System.Drawing.Size(75, 19);
+            this.reset.TabIndex = 18;
+            this.reset.Text = "重置";
+            this.reset.UseVisualStyleBackColor = true;
+            this.reset.Click += new System.EventHandler(this.Reset_Click);
+            // 
+            // log
+            // 
+            this.log.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.log.FormattingEnabled = true;
+            this.log.ItemHeight = 11;
+            this.log.Location = new System.Drawing.Point(13, 518);
+            this.log.Name = "log";
+            this.log.Size = new System.Drawing.Size(349, 59);
+            this.log.TabIndex = 19;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 11F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(647, 581);
+            this.ClientSize = new System.Drawing.Size(647, 578);
+            this.Controls.Add(this.log);
+            this.Controls.Add(this.reset);
+            this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.checkAll);
-            this.Controls.Add(this.clbFiles);
+            this.Controls.Add(this.targetFiles);
             this.Controls.Add(this.cbIsRegex);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.txtSourceFolder);
@@ -209,7 +276,7 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "批量文件名修改器";
+            this.Text = "文件名批量修改器";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -230,8 +297,13 @@
         private System.Windows.Forms.RadioButton rbReplace;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox cbIsRegex;
-        private System.Windows.Forms.CheckedListBox clbFiles;
+        private System.Windows.Forms.CheckedListBox targetFiles;
         private System.Windows.Forms.CheckBox checkAll;
+        private System.Windows.Forms.RadioButton rbToUpper;
+        private System.Windows.Forms.RadioButton rbToLower;
+        private System.Windows.Forms.Label lblMessage;
+        private System.Windows.Forms.Button reset;
+        private System.Windows.Forms.ListBox log;
     }
 }
 

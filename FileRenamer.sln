@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileRenamer.UI", "FileRenamer\FileRenamer.UI.csproj", "{20BB222A-078D-455B-B1CA-70B05C502AF7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileRenamer.Business", "BusinessLogic\FileRenamer.Business.csproj", "{D7E2EE1D-8E06-4B26-B4D1-A56B2C818B28}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{38DB9582-ADBE-406D-BB25-65EDD5437A0C}"
 	ProjectSection(SolutionItems) = preProject
@@ -22,15 +22,12 @@ Global
 		{20BB222A-078D-455B-B1CA-70B05C502AF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20BB222A-078D-455B-B1CA-70B05C502AF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20BB222A-078D-455B-B1CA-70B05C502AF7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D7E2EE1D-8E06-4B26-B4D1-A56B2C818B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D7E2EE1D-8E06-4B26-B4D1-A56B2C818B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D7E2EE1D-8E06-4B26-B4D1-A56B2C818B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D7E2EE1D-8E06-4B26-B4D1-A56B2C818B28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
+		SolutionGuid = {062F7AE4-25F8-4FDB-B653-F9471DC2339C}
 	EndGlobalSection
 EndGlobal
