@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 
-namespace FileRenamer.Business
+namespace FileRenamer
 {
     public class GeneralRenamer : ICharacterRenamer
     {

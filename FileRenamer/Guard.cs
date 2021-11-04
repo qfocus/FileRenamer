@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace BusinessLogic
+namespace FileRenamer
 {
     public class Guard
     {

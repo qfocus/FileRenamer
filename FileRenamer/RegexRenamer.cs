@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 
-namespace FileRenamer.Business
+namespace FileRenamer
 {
-    public class GeneralRenamer : ICharacterRenamer
+    public class RegexRenamer : ICharacterRenamer
     {
         public string Delete(string name, string character)
         {
@@ -14,7 +12,10 @@ namespace FileRenamer.Business
 
         public string Rename(string name, string oldValue, string newValue)
         {
-            return name.Replace(oldValue, newValue);
+            Regex regex = new Regex(oldValue);
+
+            return regex.Replace(name, newValue);
+
         }
     }
 }
